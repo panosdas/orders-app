@@ -3,10 +3,16 @@ import { getIronSession } from "iron-session"
 import { SessionData, sessionOptions } from "./lib/session"
 
 const PUBLIC_PATHS = ["/login"]
+const PUBLIC_FILE = /\.[^/]+$/
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isPublic = PUBLIC_PATHS.includes(pathname)
+
+  // Allow the browser to fetch PWA/static assets without an active session.
+  if (PUBLIC_FILE.test(pathname)) {
+    return NextResponse.next()
+  }
 
   const response = NextResponse.next()
   const session = await getIronSession<SessionData>(request, response, sessionOptions)
@@ -28,5 +34,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon\\.ico|api/auth|api/).*)"],
+  matcher: ["/((?!_next/static|_next/image|api/auth|api/).*)"],
 }
