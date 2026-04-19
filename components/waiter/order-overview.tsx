@@ -5,6 +5,16 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft, Menu, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import {
   Table,
   TableBody,
   TableCell,
@@ -31,6 +41,7 @@ export function OrderOverview({ table, order, categories, products }: OrderOverv
   const [commentsExpanded, setCommentsExpanded] = useState(true)
   const [isPaying, setIsPaying] = useState(false)
   const [payError, setPayError] = useState<string | null>(null)
+  const [confirmPayOpen, setConfirmPayOpen] = useState(false)
 
   const itemsWithoutComment = order.items.filter((i) => !i.comment?.trim())
   const itemsWithComment = order.items.filter((i) => i.comment?.trim())
@@ -219,12 +230,32 @@ export function OrderOverview({ table, order, categories, products }: OrderOverv
         {payError && <p className="text-sm text-red-500">{payError}</p>}
         <Button
           className="w-full bg-green-500 py-6 text-lg hover:bg-green-600 disabled:opacity-40"
-          onClick={handlePayment}
+          onClick={() => setConfirmPayOpen(true)}
           disabled={isPaying || order.status === "paid"}
         >
           {isPaying ? "Επεξεργασία..." : "Πληρωμή"}
         </Button>
       </div>
+
+      <AlertDialog open={confirmPayOpen} onOpenChange={setConfirmPayOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Επιβεβαίωση πληρωμής</AlertDialogTitle>
+            <AlertDialogDescription>
+              Θέλετε σίγουρα να καταχωρήσετε πληρωμή για την παραγγελία #{order.id};
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Άκυρο</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-green-500 hover:bg-green-600"
+              onClick={handlePayment}
+            >
+              Πληρωμή
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

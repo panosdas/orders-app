@@ -24,7 +24,7 @@ export default async function WaiterTablesPage() {
   const otherUserIds = [
     ...new Set(
       (allOrders ?? [])
-        .filter((o) => o.user !== session.userId && o.status === "active")
+        .filter((o) => o.user !== session.userId)
         .map((o) => o.user as number)
     ),
   ]
@@ -43,12 +43,12 @@ export default async function WaiterTablesPage() {
 
     if (orders.length === 0) return { ...table, status: "available" as const, waiterName: undefined }
 
-    const otherActiveOrder = orders.find((o) => o.user !== session.userId && o.status === "active")
-    if (otherActiveOrder) {
+    const otherOrder = orders.find((o) => o.user !== session.userId && (o.status === "active" || o.status === "paid"))
+    if (otherOrder) {
       return {
         ...table,
         status: "other" as const,
-        waiterName: userNameMap.get(otherActiveOrder.user as number),
+        waiterName: userNameMap.get(otherOrder.user as number),
       }
     }
 

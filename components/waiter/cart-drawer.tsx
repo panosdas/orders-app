@@ -11,6 +11,16 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { useWaiterStore } from "@/lib/store"
 import { CartItem } from "./cart-item"
 
@@ -23,6 +33,7 @@ interface CartDrawerProps {
 export function CartDrawer({ tableId, parentOrderId, onOrderSubmitted }: CartDrawerProps) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const cart = useWaiterStore((state) => state.cart)
@@ -112,7 +123,7 @@ export function CartDrawer({ tableId, parentOrderId, onOrderSubmitted }: CartDra
             <span className="text-lg font-bold">Σύνολο: {total.toFixed(2)}&#8364;</span>
             <Button
               className="bg-green-500 px-8 hover:bg-green-600"
-              onClick={handleSubmit}
+              onClick={() => setConfirmOpen(true)}
               disabled={isSubmitting}
             >
               {isSubmitting ? "Αποστολή..." : "Αποστολή"}
@@ -120,6 +131,26 @@ export function CartDrawer({ tableId, parentOrderId, onOrderSubmitted }: CartDra
           </div>
         </div>
       </DrawerContent>
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Αποστολή παραγγελίας</AlertDialogTitle>
+            <AlertDialogDescription>
+              Θέλετε σίγουρα να στείλετε την παραγγελία;
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Άκυρο</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-green-500 hover:bg-green-600"
+              onClick={handleSubmit}
+            >
+              Αποστολή
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Drawer>
   )
 }
