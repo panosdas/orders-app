@@ -13,7 +13,7 @@ export default async function WaiterTablesPage() {
   const supabase = getSupabaseAdminClient()
 
   const [{ data: tables }, { data: allOrders }] = await Promise.all([
-    supabase.from("RES_TABLE").select("id, table_num").order("table_num"),
+    supabase.from("RES_TABLE").select("id, table_num").eq("show", "service").order("table_num"),
     supabase
       .from("PARAGELIA")
       .select("table, user, status")

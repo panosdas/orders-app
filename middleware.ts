@@ -26,8 +26,12 @@ export async function middleware(request: NextRequest) {
   await session.save()
 
   if (isPublic) {
-    const redirectTo = session.role === "service" ? "/waiter" : "/"
+    const redirectTo = session.role === "admin" ? "/admin" : session.role === "service" ? "/waiter" : "/"
     return NextResponse.redirect(new URL(redirectTo, request.url))
+  }
+
+  if (pathname.startsWith("/admin") && session.role !== "admin") {
+    return NextResponse.redirect(new URL("/login", request.url))
   }
 
   return response

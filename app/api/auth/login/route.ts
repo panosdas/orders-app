@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Λάθος στοιχεία σύνδεσης" }, { status: 401 })
   }
 
-  const redirectTo = user.role === "service" ? "/waiter" : "/"
+  const redirectTo = user.role === "admin" ? "/admin" : user.role === "service" ? "/waiter" : "/"
 
   const response = NextResponse.json({ success: true, redirectTo })
   const session = await getIronSession<SessionData>(request, response, sessionOptions)
