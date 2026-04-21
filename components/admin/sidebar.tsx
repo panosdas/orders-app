@@ -19,6 +19,10 @@ import {
 const NAV_ITEMS = [
   { label: "Τραπέζια", href: "/admin" },
   { label: "Νέα Παραγγελία Take Away", href: "/admin/takeaway" },
+  { label: "Παραγγελίες", href: "/admin/paraggelies" },
+  { label: "Κατηγορίες", href: "/admin/categories" },
+  { label: "Προϊόντα", href: "/admin/products" },
+  { label: "Στατιστικά", href: "/admin/statistika" },
 ]
 
 interface SidebarProps {
